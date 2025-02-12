@@ -9,13 +9,13 @@ outputRootDir = rootDir + 'TestOutputsTemp/'
 ## Choose model
 
 #modelID = 'birdnet_v2.4'
-#modelID = 'birdnet_v2.2'
+modelID = 'birdnet_v2.2'
 
 #modelID = 'avesecho_v1.3.0'
 #modelID = 'avesecho_v1.3.0_transformer'
 
 #modelID = 'birdid-europe254-medium'
-modelID = 'birdid-europe254-large'
+#modelID = 'birdid-europe254-large'
 
 
 
@@ -37,12 +37,14 @@ def getModelResults(modelID, outputRootDir, listOfFilePathsOrFolder, instanceInd
     if modelID == 'birdnet_v2.4':
         dockerInputDir = '/input'
         dockerOutputDir = '/output'
-        dockerParamString = 'birdnet-v24 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
+        #dockerParamString = 'birdnet-v24 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
+        dockerParamString = 'ghcr.io/mfn-berlin/birdnet-v24 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
     
     if modelID == 'birdnet_v2.2':
         dockerInputDir = '/input'
         dockerOutputDir = '/output'
-        dockerParamString = 'birdnet-v22 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
+        #dockerParamString = 'birdnet-v22 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
+        dockerParamString = 'ghcr.io/mfn-berlin/birdnet-v22 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
 
 
     if modelID == 'avesecho_v1.3.0':
@@ -60,12 +62,14 @@ def getModelResults(modelID, outputRootDir, listOfFilePathsOrFolder, instanceInd
     if modelID == 'birdid-europe254-medium':
         dockerInputDir = '/input'
         dockerOutputDir = '/output'
-        dockerParamString = "--gpus device=0 --ipc=host birdid-europe254-v250119-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium"
+        #dockerParamString = "--gpus device=0 --ipc=host birdid-europe254-v250119-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium"
+        dockerParamString = "--gpus device=0 --ipc=host ghcr.io/mfn-berlin/birdid-europe254-v250119-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium"
 
     if modelID == 'birdid-europe254-large':
         dockerInputDir = '/input'
         dockerOutputDir = '/output'
-        dockerParamString = "--gpus device=0 --ipc=host birdid-europe254-v250119-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large"
+        #dockerParamString = "--gpus device=0 --ipc=host birdid-europe254-v250119-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large"
+        dockerParamString = "--gpus device=0 --ipc=host ghcr.io/mfn-berlin/birdid-europe254-v250119-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large"
 
 
 

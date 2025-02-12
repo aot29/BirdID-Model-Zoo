@@ -255,14 +255,13 @@ def postProcessResults(modelID, outputRootDir, removeTemporaryResultFiles=False)
 
 
     # Save to csv
-    #dstPath = outputRootDir + 'result_birdnet_v2.4.csv'
-    #dstPath = outputRootDir + 'result_' + modelID + '.csv'
     dstPath = outputRootDir + modelID + '.csv'
     df.to_csv(dstPath, index=False)
 
 
     ## Do something with the result csv file
     # Maybe reduce confidence values to 5 decimal places, ...
+    # Add results to DB, ...
 
     ## Delete outputDir and its contents
     if removeTemporaryResultFiles:

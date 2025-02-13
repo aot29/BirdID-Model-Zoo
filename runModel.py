@@ -14,9 +14,54 @@ outputRootDir = rootDir + 'TestOutputsTemp/'
 #modelID = 'avesecho_v1.3.0'
 #modelID = 'avesecho_v1.3.0_transformer'
 
-#modelID = 'birdid-europe254-medium'
-modelID = 'birdid-europe254-large'
+modelID = 'birdid-europe254-medium'
+#modelID = 'birdid-europe254-large'
 
+
+dockerConfig = {
+    'birdnet_v2.4': {
+        'options': '',
+        'inputDir': '/input',
+        'outputDir': '/output',
+        'image': 'ghcr.io/mfn-berlin/birdnet-v24',
+        'command': '-m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
+    },
+    'birdnet_v2.2': {
+        'options': '',
+        'inputDir': '/input',
+        'outputDir': '/output',
+        'image': 'ghcr.io/mfn-berlin/birdnet-v22',
+        'command': '-m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
+    },
+    'avesecho_v1.3.0': {
+        'options': '--shm-size=4g --gpus all -e CUDA_VISIBLE_DEVICES=0',
+        'inputDir': '/app/audio',
+        'outputDir': '/app/outputs',
+        'image': 'registry.gitlab.com/arise-biodiversity/dsi/algorithms/avesecho-v1/avesechov1:v1.3.0',
+        'command': "--i audio --model_name 'fc' --add_csv --mconf 0.01"
+    },
+    'avesecho_v1.3.0_transformer': {
+        'options': '--shm-size=4g --gpus all -e CUDA_VISIBLE_DEVICES=0',
+        'inputDir': '/app/audio',
+        'outputDir': '/app/outputs',
+        'image': 'registry.gitlab.com/arise-biodiversity/dsi/algorithms/avesecho-v1/avesechov1:v1.3.0',
+        'command': "--i audio --model_name 'passt' --add_csv --mconf 0.01"
+    },
+    'birdid-europe254-medium': {
+        'options': '--gpus device=0 --ipc=host',
+        'inputDir': '/input',
+        'outputDir': '/output',
+        'image': 'ghcr.io/mfn-berlin/birdid-europe254-v250212-1',
+        'command': 'python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium'
+    },
+    'birdid-europe254-large': {
+        'options': '--gpus device=0 --ipc=host',
+        'inputDir': '/input',
+        'outputDir': '/output',
+        'image': 'ghcr.io/mfn-berlin/birdid-europe254-v250212-1',
+        'command': 'python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large'
+    }
+}
 
 
 # Get some input files
@@ -32,77 +77,48 @@ filePaths = [
 
 def getModelResults(modelID, outputRootDir, listOfFilePathsOrFolder, instanceIndex=None, removeContainer=True):
 
-    # Define Docker run command depending on model
-
-    if modelID == 'birdnet_v2.4':
-        dockerInputDir = '/input'
-        dockerOutputDir = '/output'
-        #dockerParamString = 'birdnet-v24 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
-        dockerParamString = 'ghcr.io/mfn-berlin/birdnet-v24 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
-    
-    if modelID == 'birdnet_v2.2':
-        dockerInputDir = '/input'
-        dockerOutputDir = '/output'
-        #dockerParamString = 'birdnet-v22 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
-        dockerParamString = 'ghcr.io/mfn-berlin/birdnet-v22 -m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 2.0 --rtype csv'
-
-
-    if modelID == 'avesecho_v1.3.0':
-        dockerInputDir = '/app/audio'
-        dockerOutputDir = '/app/outputs'
-        dockerParamString = "--shm-size=4g --gpus all -e CUDA_VISIBLE_DEVICES=0 registry.gitlab.com/arise-biodiversity/dsi/algorithms/avesecho-v1/avesechov1:v1.3.0 --i audio --model_name 'fc' --add_csv --mconf 0.01"
-
-    if modelID == 'avesecho_v1.3.0_transformer':
-        dockerInputDir = '/app/audio'
-        dockerOutputDir = '/app/outputs'
-        # --model_name 'passt'
-        dockerParamString = "--shm-size=4g --gpus all -e CUDA_VISIBLE_DEVICES=0 registry.gitlab.com/arise-biodiversity/dsi/algorithms/avesecho-v1/avesechov1:v1.3.0 --i audio --model_name 'passt' --add_csv --mconf 0.01"
-
-
-    if modelID == 'birdid-europe254-medium':
-        dockerInputDir = '/input'
-        dockerOutputDir = '/output'
-        #dockerParamString = "--gpus device=0 --ipc=host birdid-europe254-v250212-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium"
-        dockerParamString = "--gpus device=0 --ipc=host birdid-europe254-v250212-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium"
-
-    if modelID == 'birdid-europe254-large':
-        dockerInputDir = '/input'
-        dockerOutputDir = '/output'
-        #dockerParamString = "--gpus device=0 --ipc=host birdid-europe254-v250212-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large"
-        dockerParamString = "--gpus device=0 --ipc=host ghcr.io/mfn-berlin/birdid-europe254-v250212-1 python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large"
-
-
-
-    # ToDo: Maybe add instance index if multiple instances of the same model are run in parallel
-    containerName = modelID
-    if instanceIndex is not None:
-        containerName += '_' + str(instanceIndex)
-    
-    dockerRunString = 'docker run --name ' + containerName
-
-    if removeContainer:
-        dockerRunString += ' --rm'
-
+    if modelID not in dockerConfig:
+        raise ValueError(f"Unknown modelID: {modelID}")
 
     # Create outputDir (subfolder in outputRootDir) for temporary results
     outputDir = outputRootDir + modelID + '/'
     os.makedirs(outputDir, exist_ok=True)
+
+
+    ## Define Docker run command string depending on model
+
+
     
+    ## Create inputMounts depending on whether listOfFilePathsOrFolder is a list of files or a folder
     # Check if listOfFilePathsOrFolder is a list of files or a folder
     if isinstance(listOfFilePathsOrFolder, str) and os.path.isdir(listOfFilePathsOrFolder):
-        inputDir = listOfFilePathsOrFolder
-        os.system(dockerRunString + ' -v ' + inputDir + ':' + dockerInputDir +' -v ' + outputDir + ':' + dockerOutputDir + ' ' + dockerParamString)
+        inputMounts = ' -v ' + listOfFilePathsOrFolder + ':' + dockerConfig[modelID]['inputDir']
     else:
-        filePaths = listOfFilePathsOrFolder
         # Construct the Docker run command with bind mounts for each file
-        dockerCommand = dockerRunString
         inputMounts = ''
-        for filePath in filePaths:
+        for filePath in listOfFilePathsOrFolder:
             fileName = os.path.basename(filePath)
-            inputMounts += ' -v ' + filePath + ':' + dockerInputDir + '/' + fileName # + '/' is important here
-        dockerCommand += inputMounts + ' -v ' + outputDir + ':' + dockerOutputDir + ' ' + dockerParamString
-        print('Length of docker command: ' + str(len(dockerCommand)))
-        os.system(dockerCommand)
+            inputMounts += ' -v ' + filePath + ':' + dockerConfig[modelID]['inputDir'] + '/' + fileName # + '/' is important here
+
+    
+    dockerCommand = 'docker run --name ' + modelID
+    
+    # Add instance index to name if multiple instances of the same model are run in parallel
+    if instanceIndex is not None: 
+        dockerCommand += '_' + str(instanceIndex)
+    # Add option to remove container after run
+    if removeContainer: 
+        dockerCommand += ' --rm'
+
+    dockerCommand += inputMounts
+    dockerCommand += ' -v ' + outputDir + ':' + dockerConfig[modelID]['outputDir']
+    dockerCommand += ' ' + dockerConfig[modelID]['options']
+    dockerCommand += ' ' + dockerConfig[modelID]['image']
+    dockerCommand += ' ' + dockerConfig[modelID]['command']
+
+    print('dockerCommand:\n', dockerCommand)
+    print('Length of docker command: ' + str(len(dockerCommand)))
+    os.system(dockerCommand)
 
 
 

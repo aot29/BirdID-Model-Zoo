@@ -2,6 +2,7 @@ import os
 import pandas as pd
 
 
+# Define paths
 rootDir = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 outputRootDir = rootDir + 'TestOutputsTemp/'

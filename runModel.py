@@ -1,7 +1,8 @@
 import os
 import pandas as pd
 
-rootDir = '/home/tsa/Projects/250115-BirdID-Model-Zoo/BirdID-Model-Zoo/'
+
+rootDir = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 outputRootDir = rootDir + 'TestOutputsTemp/'
 

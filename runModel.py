@@ -147,7 +147,7 @@ def getModelResults(modelID, outputRootDir, listOfFilePathsOrFolder, workerIx=No
             dockerCommand += ' ' + dockerConfig[modelID]['image']
             dockerCommand += ' ' + dockerConfig[modelID]['command']
 
-            print('dockerCommand:\n', dockerCommand)
+            #print('dockerCommand:\n', dockerCommand)
             print('Length of docker command: ' + str(len(dockerCommand)))
             os.system(dockerCommand)
 
@@ -351,6 +351,12 @@ if __name__ == "__main__":
     outputRootDir = args.outputRootDir
 
     inputDirOrTextFilePath = args.inputDirOrTextFilePath
+
+    # Check if inputDirOrTextFilePath is existing file or folder
+    if not os.path.exists(inputDirOrTextFilePath):
+        raise FileNotFoundError(f"File or folder not found: {inputDirOrTextFilePath}")
+
+
     if os.path.isfile(inputDirOrTextFilePath):
         with open(inputDirOrTextFilePath, 'r') as file:
             filePaths = file.readlines()
@@ -360,6 +366,9 @@ if __name__ == "__main__":
     else:
         listOfFilePathsOrFolder = inputDirOrTextFilePath
         # Todo: check if inputDirOrTextFilePath is a folder
+
+
+
 
 
     #print('listOfFilePathsOrFolder', listOfFilePathsOrFolder)

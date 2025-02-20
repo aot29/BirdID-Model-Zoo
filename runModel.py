@@ -2,78 +2,80 @@ import os
 import pandas as pd
 from multiprocessing import cpu_count, freeze_support, Pool
 import argparse
+from typing import Optional
 
+# Get root directory of script
+rootDir = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 
 ## Default values
 
 # Model ID
-
-#modelID = 'birdnet_v2.4'
-#modelID = 'birdnet_v2.2'
-
-#modelID = 'avesecho_v1.3.0'
-#modelID = 'avesecho_v1.3.0_transformer'
-
-modelID = 'birdid-europe254-medium'
-#modelID = 'birdid-europe254-large'
-
+modelID = 'birdid-europe254-medium' # birdnet_v2.4, birdnet_v2.2, avesecho_v1.3.0, avesecho_v1.3.0_transformer, birdid-europe254-medium, birdid-europe254-large
 
 # Output root directory
-rootDir = os.path.dirname(os.path.abspath(__file__)) + '/'
 outputRootDir = rootDir + 'TestOutputsTemp/'
 
 # Path to text file with list of file paths
 inputTextFilePath = rootDir + 'inputPaths.txt'
 
-workerIx = None
+
+workerIx = 0
 nFilesPerBatch = 100
+nCpuWorkers = 4
+batchSize = 8
+gpuIx = 0 # None, 0, 1, ...
+
+minConfidenceThreshold = 0.01
 stepDuration = 2.0
+
+sharedMemorySizeStr = '4g' # None, '4g', '8g', ...
+
+removeTemporaryResultFiles = False
 removeContainer = True
+
+
+
+
+
 
 # Docker config
 dockerConfig = {
     'birdnet_v2.4': {
-        'options': '--shm-size=4g --ipc=host',
         'inputDir': '/input',
         'outputDir': '/output',
         'image': 'ghcr.io/mfn-berlin/birdnet-v24',
-        'command': '-m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 1.0 --rtype csv'
+        'command': '-m birdnet_analyzer.analyze --i input --o output --overlap 1.0 --rtype csv'
     },
     'birdnet_v2.2': {
-        'options': '--shm-size=4g --ipc=host',
         'inputDir': '/input',
         'outputDir': '/output',
         'image': 'ghcr.io/mfn-berlin/birdnet-v22',
-        'command': '-m birdnet_analyzer.analyze --i input --o output --min_conf 0.01 --overlap 1.0 --rtype csv'
+        'command': '-m birdnet_analyzer.analyze --i input --o output --overlap 1.0 --rtype csv'
     },
     'avesecho_v1.3.0': {
-        'options': '--shm-size=4g --ipc=host --gpus device=0',
         'inputDir': '/app/audio',
         'outputDir': '/app/outputs',
         'image': 'registry.gitlab.com/arise-biodiversity/dsi/algorithms/avesecho-v1/avesechov1:v1.3.0',
-        'command': "--i audio --model_name 'fc' --add_csv --mconf 0.01"
+        'command': "--i audio --model_name 'fc' --add_csv"
     },
     'avesecho_v1.3.0_transformer': {
-        'options': '--shm-size=4g --ipc=host --gpus device=0',
         'inputDir': '/app/audio',
         'outputDir': '/app/outputs',
         'image': 'registry.gitlab.com/arise-biodiversity/dsi/algorithms/avesecho-v1/avesechov1:v1.3.0',
-        'command': "--i audio --model_name 'passt' --add_csv --mconf 0.01"
+        'command': "--i audio --model_name 'passt' --add_csv"
     },
     'birdid-europe254-medium': {
-        'options': '--shm-size=4g --ipc=host --gpus device=0',
         'inputDir': '/input',
         'outputDir': '/output',
         'image': 'ghcr.io/mfn-berlin/birdid-europe254-v250212-1',
-        'command': 'python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium'
+        'command': 'python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium'
     },
     'birdid-europe254-large': {
-        'options': '--shm-size=4g --gpus device=0 --ipc=host',
         'inputDir': '/input',
         'outputDir': '/output',
         'image': 'ghcr.io/mfn-berlin/birdid-europe254-v250212-1',
-        'command': 'python inference.py -i /input -o /output --fileOutputFormats labels_csv --minConfidence 0.01 --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large'
+        'command': 'python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large'
     }
 }
 
@@ -89,7 +91,20 @@ dockerConfig = {
 
 
 
-def getModelResults(modelID, outputRootDir, listOfFilePathsOrFolder, workerIx=None, nFilesPerBatch=100, stepDuration=2.0, removeContainer=True):
+def getModelResults(
+        modelID, 
+        outputRootDir, 
+        listOfFilePathsOrFolder, 
+        workerIx=None, 
+        nFilesPerBatch=100,
+        nCpuWorkers = 4,
+        batchSize=8,
+        gpuIx=0,
+        minConfidenceThreshold=0.01,
+        stepDuration=2.0,
+        sharedMemorySizeStr = '4g',
+        removeContainer=True
+        ):
 
     if modelID not in dockerConfig:
         raise ValueError(f"Unknown modelID: {modelID}")
@@ -142,12 +157,35 @@ def getModelResults(modelID, outputRootDir, listOfFilePathsOrFolder, workerIx=No
 
         dockerCommand += inputMounts
         dockerCommand += ' -v ' + outputDir + ':' + dockerConfig[modelID]['outputDir']
-        dockerCommand += ' ' + dockerConfig[modelID]['options']
+        
+        # Add docker options
+        options = '--ipc=host'
+        if sharedMemorySizeStr:
+            options += ' --shm-size=' + sharedMemorySizeStr
+        if gpuIx is not None:
+            options += ' --gpus device=' + str(gpuIx)
+        
+        dockerCommand += ' ' + options
+        
+
+        # Add image
         dockerCommand += ' ' + dockerConfig[modelID]['image']
 
-        # Modify command depending passed arguments on model
+        # Add model arguments
         command = dockerConfig[modelID]['command']
 
+
+        ## Modify command depending of passed arguments on model
+
+        # Modify minConfidenceThreshold
+        if modelID.startswith('birdnet'):
+            command += ' --min_conf ' + str(minConfidenceThreshold)
+        if modelID.startswith('birdid'):
+            command += ' --minConfidence ' + str(minConfidenceThreshold)
+        if modelID.startswith('avesecho'):
+            command += ' --mconf ' + str(minConfidenceThreshold)
+
+        # Modify stepDuration
         if stepDuration:
             if modelID.startswith('birdnet'):
                 overlap = 3.0 - stepDuration
@@ -155,9 +193,15 @@ def getModelResults(modelID, outputRootDir, listOfFilePathsOrFolder, workerIx=No
                 command = command.replace('--overlap 1.0', overlapArg)
             if modelID.startswith('birdid'):
                 overlap = 5.0 - stepDuration
-                overlapInPerc = int(overlap / 5.0 * 100)
+                overlapInPerc = overlap / 5.0 * 100
                 overlapArg = '--overlapInPerc ' + str(overlapInPerc)
                 command = command.replace('--overlapInPerc 60', overlapArg)
+
+        # Modify nCpuWorkers and batchSize
+        if modelID.startswith('birdnet'):
+            command += ' --threads ' + str(nCpuWorkers) + ' --batchsize ' + str(batchSize)
+        if modelID.startswith('birdid'):
+            command += ' --batchSizeFiles ' + str(nCpuWorkers) + ' --nCpuWorkers ' + str(nCpuWorkers) + ' --batchSizeInference ' + str(batchSize)
 
         dockerCommand += ' ' + command
 
@@ -357,18 +401,23 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--outputRootDir', type=str, metavar='', default=outputRootDir, help='Output root directory. Defaults to ' + outputRootDir)
 
     parser.add_argument('-i', '--inputDirOrTextFilePath', type=str, metavar='', default=inputTextFilePath, help='Input directory or path of text file with list of file paths. Defaults to ' + inputTextFilePath)
-    #parser.add_argument('--filePaths', nargs='+', help='List of file paths', required=False)
-
-    parser.add_argument('-s', '--stepDuration', type=float, metavar='', default=2.0, help='Step duration in seconds. Defaults to ' + str(stepDuration))
-    parser.add_argument('-w', '--workerIx', type=int, metavar='', default=workerIx, help='Worker index. Defaults to ' + str(workerIx))
-    parser.add_argument('-n', '--nFilesPerBatch', type=int, metavar='', default=nFilesPerBatch, help='Number of files per batch. Defaults to ' + str(nFilesPerBatch))
-    #parser.add_argument('-r', '--removeContainer', action='store_true', help='Remove container after run. Defaults to True')
-    parser.add_argument('--removeTemporaryResultFiles', action='store_true', help='Remove temporary result files after post processing. Defaults to False')
     
+    parser.add_argument('-w', '--workerIx', type=Optional[int], metavar='', default=workerIx, help='Worker index. Defaults to ' + str(workerIx))
+    parser.add_argument('-n', '--nFilesPerBatch', type=int, metavar='', default=nFilesPerBatch, help='Number of files per batch. Defaults to ' + str(nFilesPerBatch))
+    parser.add_argument('-c', '--nCpuWorkers', type=int, metavar='', default=nCpuWorkers, help='Number of CPU workers. Defaults to ' + str(nCpuWorkers))
+    parser.add_argument('-b', '--batchSize', type=int, metavar='', default=batchSize, help='Batch size. Defaults to ' + str(batchSize))
+    parser.add_argument('-g', '--gpuIx', type=Optional[int], metavar='', default=gpuIx, help='GPU index. Defaults to ' + str(gpuIx))
+
+    parser.add_argument('-t', '--minConfidenceThreshold', type=float, metavar='', default=minConfidenceThreshold, help='Minimum confidence threshold. Defaults to ' + str(minConfidenceThreshold))
+    parser.add_argument('-s', '--stepDuration', type=float, metavar='', default=2.0, help='Step duration in seconds. Defaults to ' + str(stepDuration))
+    
+
+    parser.add_argument('--sharedMemorySizeStr', type=str, metavar='', default=sharedMemorySizeStr, help='Shared memory size. Defaults to ' + sharedMemorySizeStr)
+    parser.add_argument('--removeTemporaryResultFiles', action='store_true', help='Remove temporary result files after post processing. Defaults to ' + str(removeTemporaryResultFiles))
+
     # To check and add
-    #parser.add_argument('-b', '--nFilesPerBatch', type=int, metavar='', default=100, help='Number of files per batch. Defaults to 100')
     #parser.add_argument('-r', '--removeContainer', action='store_true', help='Remove container after run. Defaults to True')
-    #parser.add_argument('--removeTemporaryResultFiles', action='store_true', help='Remove temporary result files after post processing. Defaults to False')
+    
 
     args = parser.parse_args()
 
@@ -377,11 +426,19 @@ if __name__ == "__main__":
     outputRootDir = args.outputRootDir
 
     inputDirOrTextFilePath = args.inputDirOrTextFilePath
-    stepDuration = args.stepDuration
+
     workerIx = args.workerIx
     nFilesPerBatch = args.nFilesPerBatch
-    #removeContainer = args.removeContainer
+    nCpuWorkers = args.nCpuWorkers
+    batchSize = args.batchSize
+    gpuIx = args.gpuIx
+
+
+    minConfidenceThreshold = args.minConfidenceThreshold
+    stepDuration = args.stepDuration
+    sharedMemorySizeStr = args.sharedMemorySizeStr
     removeTemporaryResultFiles = args.removeTemporaryResultFiles
+    #removeContainer = args.removeContainer
 
     # Check if inputDirOrTextFilePath is existing file or folder
     if not os.path.exists(inputDirOrTextFilePath):
@@ -416,10 +473,21 @@ if __name__ == "__main__":
     os.makedirs(outputRootDir, exist_ok=True)
 
     # Run model
-    getModelResults(modelID, outputRootDir, listOfFilePathsOrFolder, workerIx=workerIx, nFilesPerBatch=nFilesPerBatch, stepDuration=stepDuration, removeContainer=True)
+    getModelResults(modelID, 
+                    outputRootDir, 
+                    listOfFilePathsOrFolder, 
+                    workerIx=workerIx, 
+                    nFilesPerBatch=nFilesPerBatch, 
+                    nCpuWorkers=nCpuWorkers,
+                    batchSize=batchSize,
+                    gpuIx=gpuIx,
+                    minConfidenceThreshold=minConfidenceThreshold,
+                    stepDuration=stepDuration, 
+                    sharedMemorySizeStr=sharedMemorySizeStr,
+                    removeContainer=True)
 
     # Post process results
-    postProcessResults(modelID, outputRootDir)
+    postProcessResults(modelID, outputRootDir, removeTemporaryResultFiles=removeTemporaryResultFiles)
     
     
 

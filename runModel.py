@@ -339,6 +339,9 @@ def postProcessResults(modelID,
         
 
 
+    ## Unknown label_id hack --> to remove later !
+    # If label_id is NaN or -1, set it to None
+    df['label_id'] = df['label_id'].apply(lambda x: None if pd.isna(x) or x == -1 else x)
     
     print(df)
 

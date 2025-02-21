@@ -11,7 +11,7 @@ rootDir = os.path.dirname(os.path.abspath(__file__)) + '/'
 ## Default values
 
 # Model ID
-modelID = 'birdid-europe254-medium' # birdnet_v2.4, birdnet_v2.2, avesecho_v1.3.0, avesecho_v1.3.0_transformer, birdid-europe254-medium, birdid-europe254-large
+modelID = 'birdnet_v2.2' # birdnet_v2.2, birdnet_v2.4, avesecho_v1.3.0, avesecho_v1.3.0_transformer, birdid-europe254-medium, birdid-europe254-large
 
 # Output root directory
 outputRootDir = rootDir + 'TestOutputsTemp/'
@@ -32,6 +32,9 @@ stepDuration = 2.0
 sharedMemorySizeStr = '4g' # None, '4g', '8g', ...
 
 removeTemporaryResultFiles = False
+fileOutputFormatsValid = ['csv', 'excel', 'pkl']
+fileOutputFormats = ['csv']
+
 removeContainer = True
 
 
@@ -75,17 +78,6 @@ dockerConfig = {
         'command': 'python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large'
     }
 }
-
-
-# # Get some input files
-# inputDir = rootDir + 'TestFiles/'
-
-# filePaths = [
-#     inputDir + 'LusMeg00027.mp3',
-#     inputDir + 'LusMeg00028.mp3'
-#     ]
-
-
 
 
 def getModelResults(
@@ -207,14 +199,10 @@ def getModelResults(
         os.system(dockerCommand)
 
 
-        
-
-
-    
-
-
-
-def postProcessResults(modelID, outputRootDir, removeTemporaryResultFiles=False):
+def postProcessResults(modelID,
+                       outputRootDir, 
+                       fileOutputFormats=['csv'], 
+                       removeTemporaryResultFiles=False):
 
     # Load labelToId mapping table
     path = rootDir + 'LabelToIdMappings/' + modelID + '.csv'
@@ -362,9 +350,31 @@ def postProcessResults(modelID, outputRootDir, removeTemporaryResultFiles=False)
     '''
 
 
-    # Save to csv
-    dstPath = outputRootDir + modelID + '.csv'
-    df.to_csv(dstPath, index=False)
+    ## Save outout to different file formats
+    # Check if format is valid
+    for fileOutputFormat in fileOutputFormats:
+        if fileOutputFormat not in fileOutputFormatsValid:
+            print('Warning, invalid file output format:', fileOutputFormat, flush=True)
+    
+
+    dstPathWithoutExt = outputRootDir + modelID
+
+    if 'csv' in fileOutputFormats:
+        df.to_csv(dstPathWithoutExt + '.csv', index=False)
+    
+    if 'pkl' in fileOutputFormats:
+        df.to_pickle(dstPathWithoutExt + '.pkl')
+    
+    if 'excel' in fileOutputFormats:
+        with pd.ExcelWriter(dstPathWithoutExt + '.xlsx', engine='xlsxwriter') as writer:
+            #writer.book.use_zip64()
+            writer.book.strings_to_urls = False
+            df.to_excel(writer, sheet_name='Sheet1', index=False)
+            worksheet = writer.sheets['Sheet1']
+            (max_row, max_col) = df.shape # Get the dimensions of the DataFrame
+            column_settings = [{'header': column} for column in df.columns] # Define the column settings
+            worksheet.add_table(0, 0, max_row, max_col - 1, {'columns': column_settings, 'name': 'Table1', 'style': 'Table Style Light 9'}) # Add the table    
+   
 
 
     ## Do something with the result csv file
@@ -412,6 +422,8 @@ if __name__ == "__main__":
     parser.add_argument('--sharedMemorySizeStr', type=str, metavar='', default=sharedMemorySizeStr, help='Shared memory size. Defaults to ' + sharedMemorySizeStr)
     parser.add_argument('--removeTemporaryResultFiles', action='store_true', help='Remove temporary result files after post processing. Defaults to ' + str(removeTemporaryResultFiles))
 
+    parser.add_argument('-f', '--fileOutputFormats', nargs='*', default=fileOutputFormats, type=str, metavar='', help='Format of output file(s). List of values in [csv, excel, pkl]. Defaults to csv.')
+
     # To check and add
     #parser.add_argument('-r', '--removeContainer', action='store_true', help='Remove container after run. Defaults to True')
     
@@ -435,6 +447,7 @@ if __name__ == "__main__":
     stepDuration = args.stepDuration
     sharedMemorySizeStr = args.sharedMemorySizeStr
     removeTemporaryResultFiles = args.removeTemporaryResultFiles
+    fileOutputFormats = args.fileOutputFormats
     #removeContainer = args.removeContainer
 
     # Check if inputDirOrTextFilePath is existing file or folder
@@ -450,16 +463,7 @@ if __name__ == "__main__":
             print('Number of files to process:', nFilesToProcess)
     else:
         listOfFilePathsOrFolder = inputDirOrTextFilePath
-        # Todo: check if inputDirOrTextFilePath is a folder
 
-
-
-
-
-    #print('listOfFilePathsOrFolder', listOfFilePathsOrFolder)
-
-    # inputDir = args.inputDir
-    # filePaths = args.filePaths
 
 
 
@@ -484,7 +488,10 @@ if __name__ == "__main__":
                     removeContainer=True)
 
     # Post process results
-    postProcessResults(modelID, outputRootDir, removeTemporaryResultFiles=removeTemporaryResultFiles)
+    postProcessResults(modelID, 
+                       outputRootDir, 
+                       fileOutputFormats=fileOutputFormats, 
+                       removeTemporaryResultFiles=removeTemporaryResultFiles)
     
     
 

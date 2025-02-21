@@ -20,7 +20,7 @@ outputRootDir = rootDir + 'TestOutputsTemp/'
 inputTextFilePath = rootDir + 'inputPaths.txt'
 
 
-workerIx = 0
+workerId = '0'
 nFilesPerBatch = 100
 nCpuWorkers = 4
 batchSize = 8
@@ -33,9 +33,6 @@ sharedMemorySizeStr = '4g' # None, '4g', '8g', ...
 
 removeTemporaryResultFiles = False
 removeContainer = True
-
-
-
 
 
 
@@ -95,7 +92,7 @@ def getModelResults(
         modelID, 
         outputRootDir, 
         listOfFilePathsOrFolder, 
-        workerIx=None, 
+        workerId=None, 
         nFilesPerBatch=100,
         nCpuWorkers = 4,
         batchSize=8,
@@ -119,8 +116,8 @@ def getModelResults(
     dockerCommand = 'docker run --name ' + modelID
     
     # Add instance index to name if multiple instances of the same model are run in parallel
-    if workerIx is not None: 
-        dockerCommand += '_' + str(workerIx)
+    if workerId is not None: 
+        dockerCommand += '_' + str(workerId)
     # Add option to remove container after run
     if removeContainer: 
         dockerCommand += ' --rm'
@@ -402,7 +399,7 @@ if __name__ == "__main__":
 
     parser.add_argument('-i', '--inputDirOrTextFilePath', type=str, metavar='', default=inputTextFilePath, help='Input directory or path of text file with list of file paths. Defaults to ' + inputTextFilePath)
     
-    parser.add_argument('-w', '--workerIx', type=Optional[int], metavar='', default=workerIx, help='Worker index. Defaults to ' + str(workerIx))
+    parser.add_argument('-w', '--workerId', type=str, metavar='', default=workerId, help='Worker index. Defaults to ' + str(workerId))
     parser.add_argument('-n', '--nFilesPerBatch', type=int, metavar='', default=nFilesPerBatch, help='Number of files per batch. Defaults to ' + str(nFilesPerBatch))
     parser.add_argument('-c', '--nCpuWorkers', type=int, metavar='', default=nCpuWorkers, help='Number of CPU workers. Defaults to ' + str(nCpuWorkers))
     parser.add_argument('-b', '--batchSize', type=int, metavar='', default=batchSize, help='Batch size. Defaults to ' + str(batchSize))
@@ -427,7 +424,7 @@ if __name__ == "__main__":
 
     inputDirOrTextFilePath = args.inputDirOrTextFilePath
 
-    workerIx = args.workerIx
+    workerId = args.workerId
     nFilesPerBatch = args.nFilesPerBatch
     nCpuWorkers = args.nCpuWorkers
     batchSize = args.batchSize
@@ -476,7 +473,7 @@ if __name__ == "__main__":
     getModelResults(modelID, 
                     outputRootDir, 
                     listOfFilePathsOrFolder, 
-                    workerIx=workerIx, 
+                    workerId=workerId, 
                     nFilesPerBatch=nFilesPerBatch, 
                     nCpuWorkers=nCpuWorkers,
                     batchSize=batchSize,

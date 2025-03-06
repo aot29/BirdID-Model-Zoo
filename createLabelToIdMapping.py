@@ -5,13 +5,15 @@ import pandas as pd
 # Create labelToId mapping table for each model
 
 
-projDir = '/home/tsa/Projects/250115-BirdID-Model-Zoo/'
+# Get root directory of script
+rootDir = os.path.dirname(os.path.abspath(__file__)) + '/'
 
 
 def getLabelsBirdNetV24():
 
     # BirdNet 2.4
-    path = projDir + 'Models/BirdNET/BirdNET-Analyzer/birdnet_analyzer/checkpoints/V2.4/BirdNET_GLOBAL_6K_V2.4_Labels.txt'
+    #path = rootDir + 'Models/BirdNET/BirdNET-Analyzer/birdnet_analyzer/checkpoints/V2.4/BirdNET_GLOBAL_6K_V2.4_Labels.txt'
+    path = rootDir + 'LabelToIdMappings/ModelLabelFiles/BirdNET_GLOBAL_6K_V2.4_Labels.txt'
 
     '''
     Abroscopus albogularis_Rufous-faced Warbler
@@ -38,7 +40,8 @@ def getLabelsBirdNetV24():
 def getLabelsBirdNetV22():
 
     # BirdNet 2.2
-    path = projDir + 'Models/BirdNET/BirdNET-Analyzer/birdnet_analyzer/checkpoints/V2.2/BirdNET_GLOBAL_3K_V2.2_Labels.txt'
+    #path = rootDir + 'Models/BirdNET/BirdNET-Analyzer/birdnet_analyzer/checkpoints/V2.2/BirdNET_GLOBAL_3K_V2.2_Labels.txt'
+    path = rootDir + 'LabelToIdMappings/ModelLabelFiles/BirdNET_GLOBAL_3K_V2.2_Labels.txt'
 
     '''
     Abroscopus albogularis_Rufous-faced Warbler
@@ -65,7 +68,8 @@ def getLabelsBirdNetV22():
 def getLabelsAvesEcho130():
 
     # Load labels
-    path = projDir + 'Models/AvesEchoV1/avesecho-v1/inputs/list_AvesEcho.csv'
+    #path = rootDir + 'Models/AvesEchoV1/avesecho-v1/inputs/list_AvesEcho.csv'
+    path = rootDir + 'LabelToIdMappings/ModelLabelFiles/list_AvesEcho.csv'
     df_labels = pd.read_csv(path, header=None)
     #print(df_labels)
 
@@ -94,7 +98,8 @@ def getLabelsAvesEcho130():
 def getLabelsBirdIDEurope254():
 
     # Load labels
-    path = projDir + 'Models/BirdID-Europe254/BirdID-Europe254/species.csv'
+    #path = rootDir + 'Models/BirdID-Europe254/BirdID-Europe254/species.csv'
+    path = rootDir + 'LabelToIdMappings/ModelLabelFiles/species.csv'
     
     df_labels = pd.read_csv(path, sep=';')
     #print(df_labels)
@@ -117,7 +122,7 @@ def getLabelsBirdIDEurope254():
 def createLabelToIdMapping(labels, modelID):
 
     # Load label name to ID mapping csv
-    path = 'LabelNameToIdMapping_11.csv'
+    path = rootDir + 'LabelNameToIdMapping_v03.csv'
     df_map = pd.read_csv(path, sep=',')
 
     # Cast label_id to int
@@ -185,7 +190,7 @@ def createLabelToIdMapping(labels, modelID):
     #print(df)
 
     # Save to csv
-    dstDir = projDir + 'LabelToIdMappings/'
+    dstDir = rootDir + 'LabelToIdMappings/'
     dstFileName = modelID + '.csv'
     df.to_csv(dstDir + dstFileName, index=False)
 

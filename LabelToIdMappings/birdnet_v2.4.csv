@@ -25,7 +25,7 @@ srcLabelIx,srcLabelName,dstLabelId
 23,Accipiter cirrocephalus,57
 24,Accipiter cooperii,60
 25,Accipiter fasciatus,64
-26,Accipiter gentilis,49
+26,Accipiter gentilis,50
 27,Accipiter gularis,67
 28,Accipiter hiogaster,72
 29,Accipiter melanoleucus,75
@@ -5892,7 +5892,7 @@ srcLabelIx,srcLabelName,dstLabelId
 5890,Talegalla fuscirostris,16399
 5891,Talegalla jobiensis,16400
 5892,Tamias striatus,16408
-5893,Tamiasciurus hudsonicus,16411
+5893,Tamiasciurus hudsonicus,16412
 5894,Tangara arthus,16417
 5895,Tangara chilensis,16421
 5896,Tangara cyanocephala,16423

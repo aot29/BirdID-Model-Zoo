@@ -577,7 +577,7 @@ srcLabelIx,srcLabelName,dstLabelId
 575,CommonChaffinch_Fringilla coelebs,6658
 576,CommonBlackbird_Turdus merula,17220
 577,GreatTit_Parus major,12187
-578,Noise_Noise,-1
+578,Noise_Noise,90000
 579,BarbaryPartridge_Alectoris barbara,493
 580,BollesPigeon_Columba bollii,4181
 581,LaurelPigeon_Columba junoniae,4189

@@ -1948,7 +1948,7 @@ srcLabelIx,srcLabelName,dstLabelId
 1946,Diuca diuca,5503
 1947,Dives dives,5505
 1948,Dives warczewiczi,5506
-1949,Dog,-1
+1949,Dog,2806
 1950,Dolichonyx oryzivorus,5512
 1951,Donacobius atricapilla,5515
 1952,Donacospiza albifrons,5516
@@ -2142,7 +2142,7 @@ srcLabelIx,srcLabelName,dstLabelId
 2140,Empidonax wrightii,5965
 2141,Empidonomus aurantioatrocristatus,5966
 2142,Empidonomus varius,5968
-2143,Engine,-1
+2143,Engine,90001
 2144,Enicognathus ferrugineus,5985
 2145,Enicognathus leptorhynchus,5986
 2146,Enicurus leschenaulti,5989
@@ -2151,7 +2151,7 @@ srcLabelIx,srcLabelName,dstLabelId
 2149,Entomodestes coracinus,5998
 2150,Entomodestes leucotis,5999
 2151,Entomyzon cyanotis,6000
-2152,Environmental,-1
+2152,Environmental,90002
 2153,Eolophus roseicapilla,6002
 2154,Eophona migratoria,6003
 2155,Eophona personata,6004
@@ -2324,7 +2324,7 @@ srcLabelIx,srcLabelName,dstLabelId
 2322,Ficedula tricolor,6564
 2323,Ficedula westermanni,6565
 2324,Ficedula zanthopygia,6566
-2325,Fireworks,-1
+2325,Fireworks,90003
 2326,Florisuga fusca,6577
 2327,Florisuga mellivora,6578
 2328,Fluvicola albiventer,6579
@@ -2608,7 +2608,7 @@ srcLabelIx,srcLabelName,dstLabelId
 2606,Gubernatrix cristata,7291
 2607,Gubernetes yetapa,7292
 2608,Guira guira,7293
-2609,Gun,-1
+2609,Gun,90004
 2610,Guttera pucherani,7298
 2611,Gygis alba,7308
 2612,Gymnasio nudipes,7309
@@ -2817,9 +2817,9 @@ srcLabelIx,srcLabelName,dstLabelId
 2815,Horornis ruficapilla,7799
 2816,Horornis seebohmi,7800
 2817,Horornis vulcanius,7801
-2818,Human non-vocal,-1
-2819,Human vocal,-1
-2820,Human whistle,-1
+2818,Human non-vocal,7767
+2819,Human vocal,7767
+2820,Human whistle,7767
 2821,Hydrobates castro,7833
 2822,Hydrobates leucorhous,7841
 2823,Hydrobates monorhis,7845
@@ -3926,7 +3926,7 @@ srcLabelIx,srcLabelName,dstLabelId
 3924,Nisaetus cirrhatus,11167
 3925,Nisaetus nanus,11171
 3926,Nisaetus nipalensis,11172
-3927,Noise,-1
+3927,Noise,90000
 3928,Nonnula brunnea,11187
 3929,Nonnula frontalis,11188
 3930,Nonnula rubecula,11189
@@ -5559,7 +5559,7 @@ srcLabelIx,srcLabelName,dstLabelId
 5557,Sipia laemosticta,15675
 5558,Sipia nigricauda,15676
 5559,Sipia palliata,15677
-5560,Siren,-1
+5560,Siren,90005
 5561,Sirystes albocinereus,15683
 5562,Sirystes albogriseus,15684
 5563,Sirystes sibilator,15685

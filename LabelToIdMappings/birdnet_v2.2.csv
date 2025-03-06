@@ -1021,7 +1021,7 @@ srcLabelIx,srcLabelName,dstLabelId
 1019,Diuca diuca,5503
 1020,Dives dives,5505
 1021,Dives warczewiczi,5506
-1022,Dog,-1
+1022,Dog,2806
 1023,Dolichonyx oryzivorus,5512
 1024,Donacobius atricapilla,5515
 1025,Donacospiza albifrons,5516
@@ -1135,12 +1135,12 @@ srcLabelIx,srcLabelName,dstLabelId
 1133,Empidonax wrightii,5965
 1134,Empidonomus aurantioatrocristatus,5966
 1135,Empidonomus varius,5968
-1136,Engine,-1
+1136,Engine,90001
 1137,Enicognathus ferrugineus,5985
 1138,Enicurus leschenaulti,5989
 1139,Entomodestes leucotis,5999
 1140,Entomyzon cyanotis,6000
-1141,Environmental,-1
+1141,Environmental,90002
 1142,Eolophus roseicapilla,6002
 1143,Eophona migratoria,6003
 1144,Eopsaltria australis,6005
@@ -1218,7 +1218,7 @@ srcLabelIx,srcLabelName,dstLabelId
 1216,Ficedula tricolor,6564
 1217,Ficedula westermanni,6565
 1218,Ficedula zanthopygia,6566
-1219,Fireworks,-1
+1219,Fireworks,90003
 1220,Florisuga mellivora,6578
 1221,Fluvicola nengeta,6581
 1222,Formicarius analis,6585
@@ -1351,7 +1351,7 @@ srcLabelIx,srcLabelName,dstLabelId
 1349,Gryllus rubens,7278
 1350,Gubernetes yetapa,7292
 1351,Guira guira,7293
-1352,Gun,-1
+1352,Gun,90004
 1353,Gygis alba,7308
 1354,Gymnocichla nudiceps,7313
 1355,Gymnopithys bicolor,7329
@@ -1448,9 +1448,9 @@ srcLabelIx,srcLabelName,dstLabelId
 1446,Horornis flavolivaceus,7795
 1447,Horornis fortipes,7796
 1448,Horornis vulcanius,7801
-1449,Human non-vocal,-1
-1450,Human vocal,-1
-1451,Human whistle,-1
+1449,Human non-vocal,7767
+1450,Human vocal,7767
+1451,Human whistle,7767
 1452,Hydrobates castro,7833
 1453,Hydrobates leucorhous,7841
 1454,Hydrocoloeus minutus,7854
@@ -1996,7 +1996,7 @@ srcLabelIx,srcLabelName,dstLabelId
 1994,Ninox scutulata,11157
 1995,Ninox strenua,11160
 1996,Nisaetus cirrhatus,11167
-1997,Noise,-1
+1997,Noise,90000
 1998,Notharchus hyperrhynchus,11196
 1999,Notharchus pectoralis,11199
 2000,Notharchus tectus,11201
@@ -2811,7 +2811,7 @@ srcLabelIx,srcLabelName,dstLabelId
 2809,Sinosuthora webbiana,12102
 2810,Sipia laemosticta,15675
 2811,Sipia nigricauda,15676
-2812,Siren,-1
+2812,Siren,90005
 2813,Sirystes sibilator,15685
 2814,Sitta canadensis,15692
 2815,Sitta carolinensis,15693

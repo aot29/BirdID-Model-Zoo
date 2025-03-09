@@ -122,7 +122,7 @@ def getLabelsBirdIDEurope254():
 def createLabelToIdMapping(labels, modelID):
 
     # Load label name to ID mapping csv
-    path = rootDir + 'LabelNameToIdMapping_v03.csv'
+    path = rootDir + 'LabelNameToIdMapping_v04.csv'
     df_map = pd.read_csv(path, sep=',')
 
     # Cast label_id to int
@@ -200,15 +200,15 @@ def createLabelToIdMapping(labels, modelID):
 ####################################################################################################
 
 
-# labels = getLabelsBirdNetV24()
-# createLabelToIdMapping(labels, 'birdnet_v2.4')
+labels = getLabelsBirdNetV24()
+createLabelToIdMapping(labels, 'birdnet_v2.4')
 
-# labels = getLabelsBirdNetV22()
-# createLabelToIdMapping(labels, 'birdnet_v2.2')
+labels = getLabelsBirdNetV22()
+createLabelToIdMapping(labels, 'birdnet_v2.2')
 
-# labels = getLabelsAvesEcho130()
-# createLabelToIdMapping(labels, 'avesecho_v1.3.0')
-# createLabelToIdMapping(labels, 'avesecho_v1.3.0_transformer')
+labels = getLabelsAvesEcho130()
+createLabelToIdMapping(labels, 'avesecho_v1.3.0')
+createLabelToIdMapping(labels, 'avesecho_v1.3.0_transformer')
 
 labels = getLabelsBirdIDEurope254()
 createLabelToIdMapping(labels, 'birdid-europe254-medium')

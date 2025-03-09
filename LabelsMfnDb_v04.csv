@@ -4588,7 +4588,6 @@ id,name,english,german,gbif,class,order
 4845,Curruca nana,Asian Desert Warbler,Wüstengrasmücke,Sylvia nana,Aves,Passeriformes
 4847,Curruca nisoria,Barred Warbler,Sperbergrasmücke,Sylvia nisoria,Aves,Passeriformes
 4849,Curruca ruppeli,Rüppell's Warbler,Maskengrasmücke,Sylvia ruppeli,Aves,Passeriformes
-4850,Sylvia rueppelli,,,Sylvia ruppeli,Aves,Passeriformes
 4851,Curruca sarda,Marmora's Warbler,Sardengrasmücke,Sylvia sarda,Aves,Passeriformes
 4852,Curruca subalpina,Moltoni's Warbler,Ligurien-Bartgrasmücke,Curruca subalpina,Aves,Passeriformes
 4853,Curruca subcoerulea,Chestnut-vented Warbler,Meisengrasmücke,Curruca subcoerulea,Aves,Passeriformes
@@ -15631,10 +15630,6 @@ id,name,english,german,gbif,class,order
 16207,Sylphoides arenaria,,,Sylphoides arenaria,Insecta,Hemiptera
 16208,Sylvia atricapilla,Eurasian Blackcap,Mönchsgrasmücke,Sylvia atricapilla,Aves,Passeriformes
 16209,Sylvia borin,Garden Warbler,Gartengrasmücke,Sylvia borin,Aves,Passeriformes
-16210,Sylvia cantillans,,Weißbart-Grasmücke,Sylvia cantillans,Aves,Passeriformes
-16211,Sylvia melanocephala,,Samtkopf-Grasmücke,Sylvia melanocephala,Aves,Passeriformes
-16212,Sylvia subalpina,,Ligurien-Bartgrasmücke,Sylvia subalpina,Aves,Passeriformes
-16213,Sylvia subcaerulea,,,Sylvia subcaerulea,Aves,Passeriformes
 16214,Sylvietta brachyura,Northern Crombec,Braunbauchsylvietta,Sylvietta brachyura,Aves,Passeriformes
 16215,Sylvietta denti,Lemon-bellied Crombec,Gelbsteißsylvietta,Sylvietta denti,Aves,Passeriformes
 16216,Sylvietta isabellina,Somali Crombec,Isabellsylvietta,Sylvietta isabellina,Aves,Passeriformes

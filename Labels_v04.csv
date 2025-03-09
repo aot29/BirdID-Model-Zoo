@@ -4569,7 +4569,7 @@ id,sciName (Clements/eBird/ML),comNameEn (Clements/eBird/ML),code (Clements/eBir
 4821,Curruca balearica,Balearic Warbler,balwar1,Curruca balearica,Balearic Warbler,Balearengrasmücke,Curruca balearica,Aves,Passeriformes,['Curruca balearica']
 4822,Curruca boehmi,Banded Parisoma,banwar2,Curruca boehmi,Banded Parisoma,Bandgrasmücke,Sylvia boehmi,Aves,Passeriformes,"['Curruca boehmi', 'Sylvia boehmi']"
 4823,Curruca buryi,Yemen Warbler,yemwar1,Curruca buryi,Yemen Warbler,Jemengrasmücke,Sylvia buryi,Aves,Passeriformes,"['Curruca buryi', 'Sylvia buryi']"
-4824,Curruca cantillans,Eastern Subalpine Warbler,easwar1,Curruca cantillans,Eastern Subalpine Warbler,Balkan-Bartgrasmücke,Curruca cantillans,Aves,Passeriformes,['Curruca cantillans']
+4824,Curruca cantillans,Eastern Subalpine Warbler,easwar1,Curruca cantillans,Eastern Subalpine Warbler,Balkan-Bartgrasmücke,Curruca cantillans,Aves,Passeriformes,"['Curruca cantillans', 'Sylvia cantillans']"
 4825,Curruca communis,Greater Whitethroat,grewhi1,Curruca communis,Common Whitethroat,Dorngrasmücke,Sylvia communis,Aves,Passeriformes,"['Curruca communis', 'Sylvia communis']"
 4827,Curruca conspicillata,Spectacled Warbler,spewar2,Curruca conspicillata,Spectacled Warbler,Brillengrasmücke,Sylvia conspicillata,Aves,Passeriformes,"['Curruca conspicillata', 'Sylvia conspicillata']"
 4829,Curruca crassirostris,Eastern Orphean Warbler,eaowar2,Curruca crassirostris,Eastern Orphean Warbler,Nachtigallengrasmücke,Sylvia crassirostris,Aves,Passeriformes,"['Curruca crassirostris', 'Sylvia crassirostris']"
@@ -4581,17 +4581,16 @@ id,sciName (Clements/eBird/ML),comNameEn (Clements/eBird/ML),code (Clements/eBir
 4837,Curruca layardi,Layard's Warbler,laywar2,Curruca layardi,Layard's Warbler,Layardgrasmücke,Sylvia layardi,Aves,Passeriformes,"['Curruca layardi', 'Sylvia layardi']"
 4838,Curruca leucomelaena,Arabian Warbler,reswar1,Curruca leucomelaena,Arabian Warbler,Akaziengrasmücke,Sylvia leucomelaena,Aves,Passeriformes,"['Curruca leucomelaena', 'Sylvia leucomelaena']"
 4839,Curruca lugens,Brown Parisoma,brnwar1,Curruca lugens,Brown Parisoma,Braungrasmücke,Sylvia lugens,Aves,Passeriformes,"['Curruca lugens', 'Sylvia lugens']"
-4840,Curruca melanocephala,Sardinian Warbler,sarwar1,Curruca melanocephala,Sardinian Warbler,Samtkopf-Grasmücke,Curruca melanocephala,Aves,Passeriformes,['Curruca melanocephala']
+4840,Curruca melanocephala,Sardinian Warbler,sarwar1,Curruca melanocephala,Sardinian Warbler,Samtkopf-Grasmücke,Curruca melanocephala,Aves,Passeriformes,"['Curruca melanocephala', 'Sylvia melanocephala']"
 4841,Curruca melanothorax,Cyprus Warbler,cypwar1,Curruca melanothorax,Cyprus Warbler,Schuppengrasmücke,Sylvia melanothorax,Aves,Passeriformes,"['Curruca melanothorax', 'Sylvia melanothorax']"
 4842,Curruca minula,,,,,,Curruca minula,Aves,Passeriformes,['Curruca minula']
 4843,Curruca mystacea,Menetries's Warbler,menwar1,Curruca mystacea,Menetries's Warbler,Tamariskengrasmücke,Sylvia mystacea,Aves,Passeriformes,"['Curruca mystacea', 'Sylvia mystacea']"
 4845,Curruca nana,Asian Desert Warbler,asdwar1,Curruca nana,Asian Desert Warbler,Wüstengrasmücke,Sylvia nana,Aves,Passeriformes,"['Curruca nana', 'Sylvia nana']"
 4847,Curruca nisoria,Barred Warbler,barwar1,Curruca nisoria,Barred Warbler,Sperbergrasmücke,Sylvia nisoria,Aves,Passeriformes,"['Curruca nisoria', 'Sylvia nisoria']"
-4849,Curruca ruppeli,Rüppell's Warbler,ruewar1,Curruca ruppeli,Rüppell's Warbler,Maskengrasmücke,Sylvia ruppeli,Aves,Passeriformes,"['Curruca ruppeli', 'Sylvia ruppeli']"
-4850,Sylvia rueppelli,,,,,,Sylvia ruppeli,Aves,Passeriformes,"['Sylvia rueppelli', 'Sylvia ruppeli']"
+4849,Curruca ruppeli,Rüppell's Warbler,ruewar1,Curruca ruppeli,Rüppell's Warbler,Maskengrasmücke,Sylvia ruppeli,Aves,Passeriformes,"['Curruca ruppeli', 'Sylvia rueppelli', 'Sylvia ruppeli']"
 4851,Curruca sarda,Marmora's Warbler,marwar1,Curruca sarda,Marmora's Warbler,Sardengrasmücke,Sylvia sarda,Aves,Passeriformes,"['Curruca sarda', 'Sylvia sarda']"
-4852,Curruca subalpina,Moltoni's Warbler,subwar8,Curruca subalpina,Moltoni's Warbler,Ligurien-Bartgrasmücke,Curruca subalpina,Aves,Passeriformes,['Curruca subalpina']
-4853,Curruca subcoerulea,Chestnut-vented Warbler,ruvwar2,Curruca subcoerulea,Chestnut-vented Warbler,Meisengrasmücke,Curruca subcoerulea,Aves,Passeriformes,['Curruca subcoerulea']
+4852,Curruca subalpina,Moltoni's Warbler,subwar8,Curruca subalpina,Moltoni's Warbler,Ligurien-Bartgrasmücke,Curruca subalpina,Aves,Passeriformes,"['Curruca subalpina', 'Sylvia subalpina']"
+4853,Curruca subcoerulea,Chestnut-vented Warbler,ruvwar2,Curruca subcoerulea,Chestnut-vented Warbler,Meisengrasmücke,Curruca subcoerulea,Aves,Passeriformes,"['Curruca subcoerulea', 'Sylvia subcaerulea']"
 4854,Curruca undata,Dartford Warbler,darwar1,Curruca undata,Dartford Warbler,Provencegrasmücke,Sylvia undata,Aves,Passeriformes,"['Curruca undata', 'Sylvia undata']"
 4856,Cursorius coromandelicus,Indian Courser,indcou1,Cursorius coromandelicus,Indian Courser,Koromandelrennvogel,Cursorius coromandelicus,Aves,Charadriiformes,['Cursorius coromandelicus']
 4857,Cursorius cursor,Cream-colored Courser,crccou1,Cursorius cursor,Cream-colored Courser,Rennvogel,Cursorius cursor,Aves,Charadriiformes,['Cursorius cursor']
@@ -15631,10 +15630,6 @@ id,sciName (Clements/eBird/ML),comNameEn (Clements/eBird/ML),code (Clements/eBir
 16207,Sylphoides arenaria,,,,,,Sylphoides arenaria,Insecta,Hemiptera,['Sylphoides arenaria']
 16208,Sylvia atricapilla,Eurasian Blackcap,blackc1,Sylvia atricapilla,Eurasian Blackcap,Mönchsgrasmücke,Sylvia atricapilla,Aves,Passeriformes,['Sylvia atricapilla']
 16209,Sylvia borin,Garden Warbler,garwar1,Sylvia borin,Garden Warbler,Gartengrasmücke,Sylvia borin,Aves,Passeriformes,['Sylvia borin']
-16210,Sylvia cantillans,,,,,Weißbart-Grasmücke,Sylvia cantillans,Aves,Passeriformes,['Sylvia cantillans']
-16211,Sylvia melanocephala,,,,,Samtkopf-Grasmücke,Sylvia melanocephala,Aves,Passeriformes,['Sylvia melanocephala']
-16212,Sylvia subalpina,,,,,Ligurien-Bartgrasmücke,Sylvia subalpina,Aves,Passeriformes,['Sylvia subalpina']
-16213,Sylvia subcaerulea,,,,,,Sylvia subcaerulea,Aves,Passeriformes,['Sylvia subcaerulea']
 16214,Sylvietta brachyura,Northern Crombec,norcro1,Sylvietta brachyura,Northern Crombec,Braunbauchsylvietta,Sylvietta brachyura,Aves,Passeriformes,['Sylvietta brachyura']
 16215,Sylvietta denti,Lemon-bellied Crombec,lebcro1,Sylvietta denti,Lemon-bellied Crombec,Gelbsteißsylvietta,Sylvietta denti,Aves,Passeriformes,['Sylvietta denti']
 16216,Sylvietta isabellina,Somali Crombec,somcro1,Sylvietta isabellina,Somali Crombec,Isabellsylvietta,Sylvietta isabellina,Aves,Passeriformes,['Sylvietta isabellina']

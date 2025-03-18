@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from multiprocessing import cpu_count, freeze_support, Pool
+from multiprocessing import freeze_support
 import argparse
 from typing import Optional
 

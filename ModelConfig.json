@@ -1,0 +1,68 @@
+{
+    "birdnet_v2.4": {
+        "workerId": "None",
+        "nFilesPerBatch": 100,
+        "sharedMemorySizeStr": "4g",
+        "nCpuWorkers": 4,
+        "batchSize": 8,
+        "gpuIx": 0,
+        "minConfidenceThreshold": 0.01,
+        "stepDuration": 2.0,
+        "segmentDuration": 3.0
+    },
+    "birdnet_v2.2": {
+        "workerId": "None",
+        "nFilesPerBatch": 100,
+        "sharedMemorySizeStr": "4g",
+        "nCpuWorkers": 4,
+        "batchSize": 8,
+        "gpuIx": 0,
+        "minConfidenceThreshold": 0.01,
+        "stepDuration": 2.0,
+        "segmentDuration": 3.0
+    },
+    "avesecho_v1.3.0": {
+        "workerId": "None",
+        "nFilesPerBatch": 100,
+        "sharedMemorySizeStr": "4g",
+        "nCpuWorkers": 4,
+        "batchSize": 8,
+        "gpuIx": 0,
+        "minConfidenceThreshold": 0.01,
+        "stepDuration": 3.0,
+        "segmentDuration": 3.0
+    },
+    "avesecho_v1.3.0_transformer": {
+        "workerId": "None",
+        "nFilesPerBatch": 100,
+        "sharedMemorySizeStr": "4g",
+        "nCpuWorkers": 4,
+        "batchSize": 8,
+        "gpuIx": 0,
+        "minConfidenceThreshold": 0.01,
+        "stepDuration": 3.0,
+        "segmentDuration": 3.0
+    },
+    "birdid-europe254-medium": {
+        "workerId": "None",
+        "nFilesPerBatch": 100,
+        "sharedMemorySizeStr": "4g",
+        "nCpuWorkers": 4,
+        "batchSize": 8,
+        "gpuIx": 0,
+        "minConfidenceThreshold": 0.01,
+        "stepDuration": 2.0,
+        "segmentDuration": 5.0
+    },
+    "birdid-europe254-large": {
+        "workerId": "None",
+        "nFilesPerBatch": 100,
+        "sharedMemorySizeStr": "4g",
+        "nCpuWorkers": 4,
+        "batchSize": 8,
+        "gpuIx": 0,
+        "minConfidenceThreshold": 0.01,
+        "stepDuration": 2.0,
+        "segmentDuration": 5.0
+    }
+}

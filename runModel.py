@@ -67,14 +67,16 @@ dockerConfig = {
     "birdid-europe254-medium": {
         "inputDir": "/input",
         "outputDir": "/output",
-        "image": "ghcr.io/mfn-berlin/birdid-europe254-v250212-1",
+        "image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium",
+        #"command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium --debug --batchSizeFiles 1",
     },
     "birdid-europe254-large": {
         "inputDir": "/input",
         "outputDir": "/output",
-        "image": "ghcr.io/mfn-berlin/birdid-europe254-v250212-1",
+        "image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large",
+        #"command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large --debug --batchSizeFiles 1",
     },
 }
 
@@ -163,8 +165,9 @@ def getModelResults(
         options = "--ipc=host"
         if sharedMemorySizeStr:
             options += " --shm-size=" + sharedMemorySizeStr
-        if gpuIx is not None:
+        if gpuIx is not None and gpuIx >= 0:
             options += " --gpus device=" + str(gpuIx)
+        
 
         dockerCommand += " " + options
 
@@ -213,7 +216,7 @@ def getModelResults(
 
         dockerCommand += " " + command
 
-        # print('dockerCommand:\n', dockerCommand)
+        print('dockerCommand:\n', dockerCommand)
         print("Length of docker command: " + str(len(dockerCommand)))
         os.system(dockerCommand)
 

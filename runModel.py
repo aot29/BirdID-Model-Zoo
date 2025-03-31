@@ -22,8 +22,9 @@ inputTextFilePath = rootDir + "inputPaths.txt"
 
 workerId = "0"
 nFilesPerBatch = 100
-nCpuWorkers = 4
-batchSize = 8
+batchSizeFiles = 16
+nCpuWorkers = 8
+batchSize = 16
 gpuIx = 0  # None, 0, 1, ...
 
 minConfidenceThreshold = 0.01
@@ -67,16 +68,22 @@ dockerConfig = {
     "birdid-europe254-medium": {
         "inputDir": "/input",
         "outputDir": "/output",
-        "image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
-        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium",
-        #"command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium --debug --batchSizeFiles 1",
+        #"image": "ghcr.io/mfn-berlin/birdid-europe254-v250119-1",
+        #"image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
+        "image": "ghcr.io/mfn-berlin/birdid-europe254-v250331-1:311173148b6396f89a9d4b104cad95c064697fda",
+        #"image": "birdid-europe254-v250326-1",
+        #"command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium",
+        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium --debug",
     },
     "birdid-europe254-large": {
         "inputDir": "/input",
         "outputDir": "/output",
-        "image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
-        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large",
-        #"command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large --debug --batchSizeFiles 1",
+        #"image": "ghcr.io/mfn-berlin/birdid-europe254-v250119-1",
+        #"image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
+        "image": "ghcr.io/mfn-berlin/birdid-europe254-v250331-1:311173148b6396f89a9d4b104cad95c064697fda",
+        #"image": "birdid-europe254-v250326-1",
+        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium",
+        #"command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium --debug",
     },
 }
 
@@ -87,9 +94,10 @@ def getModelResults(
     listOfFilePathsOrFolder,
     workerId=None,
     nFilesPerBatch=100,
-    nCpuWorkers=4,
-    batchSize=8,
-    gpuIx=None,
+    batchSizeFiles=16,
+    nCpuWorkers=8,
+    batchSize=16,
+    gpuIx=0,
     minConfidenceThreshold=0.01,
     stepDuration=2.0,
     sharedMemorySizeStr="4g",
@@ -207,7 +215,7 @@ def getModelResults(
         if modelID.startswith("birdid"):
             command += (
                 " --batchSizeFiles "
-                + str(nCpuWorkers)
+                + str(batchSizeFiles)
                 + " --nCpuWorkers "
                 + str(nCpuWorkers)
                 + " --batchSizeInference "
@@ -561,6 +569,14 @@ if __name__ == "__main__":
         help="Number of files per batch. Defaults to " + str(nFilesPerBatch),
     )
     parser.add_argument(
+        "-bf",
+        "--batchSizeFiles",
+        type=int,
+        metavar="",
+        default=batchSizeFiles,
+        help="Number of files per preprocessing batch (only birdid). Defaults to " + str(batchSizeFiles),
+    )
+    parser.add_argument(
         "-c",
         "--nCpuWorkers",
         type=int,
@@ -577,7 +593,12 @@ if __name__ == "__main__":
         help="Batch size. Defaults to " + str(batchSize),
     )
     parser.add_argument(
-        "-g", "--gpuIx", type=int, metavar="", help="GPU index. Defaults to None"
+        "-g", 
+        "--gpuIx", 
+        type=int,
+        metavar="", 
+        default=gpuIx,
+        help="GPU index. Defaults to None"
     )
 
     parser.add_argument(
@@ -648,6 +669,7 @@ if __name__ == "__main__":
     outputName = args.outputName if args.outputName else args.modelID
     workerId = args.workerId
     nFilesPerBatch = args.nFilesPerBatch
+    batchSizeFiles = args.batchSizeFiles
     nCpuWorkers = args.nCpuWorkers
     batchSize = args.batchSize
     gpuIx = args.gpuIx
@@ -689,6 +711,7 @@ if __name__ == "__main__":
         listOfFilePathsOrFolder,
         workerId=workerId,
         nFilesPerBatch=nFilesPerBatch,
+        batchSizeFiles=batchSizeFiles,
         nCpuWorkers=nCpuWorkers,
         batchSize=batchSize,
         gpuIx=gpuIx,

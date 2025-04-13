@@ -68,22 +68,22 @@ dockerConfig = {
     "birdid-europe254-medium": {
         "inputDir": "/input",
         "outputDir": "/output",
-        #"image": "ghcr.io/mfn-berlin/birdid-europe254-v250119-1",
-        #"image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
+        # "image": "ghcr.io/mfn-berlin/birdid-europe254-v250119-1",
+        # "image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
         "image": "ghcr.io/mfn-berlin/birdid-europe254-v250331-1:311173148b6396f89a9d4b104cad95c064697fda",
-        #"image": "birdid-europe254-v250326-1",
-        #"command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium",
+        # "image": "birdid-europe254-v250326-1",
+        # "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium",
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium --debug",
     },
     "birdid-europe254-large": {
         "inputDir": "/input",
         "outputDir": "/output",
-        #"image": "ghcr.io/mfn-berlin/birdid-europe254-v250119-1",
-        #"image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
+        # "image": "ghcr.io/mfn-berlin/birdid-europe254-v250119-1",
+        # "image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
         "image": "ghcr.io/mfn-berlin/birdid-europe254-v250331-1:311173148b6396f89a9d4b104cad95c064697fda",
-        #"image": "birdid-europe254-v250326-1",
+        # "image": "birdid-europe254-v250326-1",
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium",
-        #"command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium --debug",
+        # "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium --debug",
     },
 }
 
@@ -175,7 +175,6 @@ def getModelResults(
             options += " --shm-size=" + sharedMemorySizeStr
         if gpuIx is not None and gpuIx >= 0:
             options += " --gpus device=" + str(gpuIx)
-        
 
         dockerCommand += " " + options
 
@@ -224,7 +223,7 @@ def getModelResults(
 
         dockerCommand += " " + command
 
-        print('dockerCommand:\n', dockerCommand)
+        print("dockerCommand:\n", dockerCommand)
         print("Length of docker command: " + str(len(dockerCommand)))
         os.system(dockerCommand)
 
@@ -574,7 +573,8 @@ if __name__ == "__main__":
         type=int,
         metavar="",
         default=batchSizeFiles,
-        help="Number of files per preprocessing batch (only birdid). Defaults to " + str(batchSizeFiles),
+        help="Number of files per preprocessing batch (only birdid). Defaults to "
+        + str(batchSizeFiles),
     )
     parser.add_argument(
         "-c",
@@ -593,12 +593,12 @@ if __name__ == "__main__":
         help="Batch size. Defaults to " + str(batchSize),
     )
     parser.add_argument(
-        "-g", 
-        "--gpuIx", 
+        "-g",
+        "--gpuIx",
         type=int,
-        metavar="", 
-        default=gpuIx,
-        help="GPU index. Defaults to None"
+        metavar="",
+        default=None,
+        help="GPU index. Defaults to None",
     )
 
     parser.add_argument(

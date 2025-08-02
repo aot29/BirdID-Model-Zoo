@@ -433,11 +433,25 @@ def postProcessResults(
             ]
         ]
 
+    ### Post-process DataFrame
+
     ## Unknown label_id hack --> to remove later !
     # If label_id is NaN or -1, set it to None
     df["label_id"] = df["label_id"].apply(
         lambda x: None if pd.isna(x) or x == -1 else x
     )
+
+    ## Sort rows by model_id, filename, start_time, confidence
+    df.sort_values(
+        by=["model_id", "filename", "start_time", "confidence"],
+        ascending=[True, True, True, False],
+        inplace=True,
+    )
+
+    ## Reset index
+    df.reset_index(drop=True, inplace=True)
+
+
 
     print(df)
 

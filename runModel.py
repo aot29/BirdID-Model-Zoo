@@ -82,8 +82,8 @@ dockerConfig = {
         # "image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
         "image": "ghcr.io/mfn-berlin/birdid-europe254-v250331-1:311173148b6396f89a9d4b104cad95c064697fda",
         # "image": "birdid-europe254-v250326-1",
-        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium",
-        # "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium --debug",
+        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large",
+        # "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large --debug",
     },
 }
 

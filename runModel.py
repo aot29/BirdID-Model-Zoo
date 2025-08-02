@@ -351,6 +351,20 @@ def postProcessResults(
             inplace=True,
         )
 
+        # Convert start_time and end_time back to seconds (0:03 --> 3.0)
+        def time_str_to_seconds(time_str):
+            """Converts a time string in 'M:SS' format to total seconds."""
+            minutes, seconds = map(int, time_str.split(':'))
+            return float(minutes * 60 + seconds)
+
+        df['start_time'] = df['start_time'].apply(time_str_to_seconds)
+        df['end_time'] = df['end_time'].apply(time_str_to_seconds)
+
+        
+
+
+
+
         # Add col label_id by merging with df_labelToId (Prediction is srcLabelName)
         df = pd.merge(
             df, df_labelToId, how="left", left_on="Prediction", right_on="srcLabelName"

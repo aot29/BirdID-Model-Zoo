@@ -3,6 +3,7 @@ import pandas as pd
 from multiprocessing import freeze_support
 import argparse
 from typing import Union, Optional
+import time
 
 # Get root directory of script
 rootDir = os.path.dirname(os.path.abspath(__file__)) + "/"
@@ -534,6 +535,8 @@ if __name__ == "__main__":
     # On Linux/OSX it does nothing.
     freeze_support()
 
+    timeStampStart = time.time()
+
     ## Parse arguments
     parser = argparse.ArgumentParser(
         description="Identify birds in audio files with various models."
@@ -761,5 +764,10 @@ if __name__ == "__main__":
         outputName=outputName,
     )
 
+    timeStampEnd = time.time()
+    elapsed = timeStampEnd - timeStampStart
+    hours, rem = divmod(elapsed, 3600)
+    minutes, seconds = divmod(rem, 60)
+    print('ElapsedTime [hh:mm:ss.ms]: {:02}:{:02}:{:06.3f}'.format(int(hours), int(minutes), seconds))
 
-print("Done.")
+    print("Done.")

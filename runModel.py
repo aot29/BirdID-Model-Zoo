@@ -114,14 +114,14 @@ def getModelResults(
 
     ## Define Docker run command string depending on model
 
-    dockerCommand = "docker run --name " + containerPrefix + modelID
+    dockerCommandFirstPart = "docker run --name " + containerPrefix + modelID
 
     # Add instance index to name if multiple instances of the same model are run in parallel
     if workerId is not None:
-        dockerCommand += "_" + str(workerId)
+        dockerCommandFirstPart += "_" + str(workerId)
     # Add option to remove container after run
     if removeContainer:
-        dockerCommand += " --rm"
+        dockerCommandFirstPart += " --rm"
 
     ## Create inputMounts depending on whether listOfFilePathsOrFolder is a list of files or a folder
 
@@ -166,6 +166,7 @@ def getModelResults(
                     + fileName
                 )  # + '/' is important here
 
+        dockerCommand = dockerCommandFirstPart
         dockerCommand += inputMounts
         dockerCommand += " -v " + outputDir + ":" + dockerConfig[modelID]["outputDir"]
 

@@ -175,7 +175,8 @@ def getModelResults(
         options = "--ipc=host"
         if sharedMemorySizeStr:
             options += " --shm-size=" + sharedMemorySizeStr
-        if gpuIx is not None and gpuIx >= 0:
+#        if gpuIx is not None and gpuIx >= 0:
+        if gpuIx and gpuIx >= 0:
             options += " --gpus device=" + str(gpuIx)
 
         dockerCommand += " " + options

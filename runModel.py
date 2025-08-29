@@ -630,12 +630,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "-g",
         "--gpuIx",
-        type=int,
+        type=str,  # Accepts both integers as strings and 'all'
         metavar="",
         default=None,
-        help="GPU index. Defaults to None",
+        help="GPU index. Can be an integer or 'all'. Defaults to None",
     )
-
     parser.add_argument(
         "-t",
         "--minConfidenceThreshold",

@@ -176,18 +176,16 @@ def getModelResults(
         if sharedMemorySizeStr:
             options += " --shm-size=" + sharedMemorySizeStr
 
-        if not gpuIx:  # empty string or None
-            # Don't add GPU option
-            pass
-        elif gpuIx.lower() == "all":
+        # Add GPU option
+        gpuIx = gpuIx.strip()
+        if gpuIx.lower() == "all":
             options += " --gpus all"
-        else:
-            try:
-                gpuIx_int = int(gpuIx)
-                if gpuIx_int >= 0:
-                    options += f" --gpus device={gpuIx_int}"
-            except ValueError:
-                raise RuntimeError(f"Invalid USE_GPU value: {gpuIx!r}")
+        elif gpuIx.isdigit():
+            gpuIx_int = int(gpuIx)
+            if gpuIx_int >= 0:
+                options += f" --gpus device={gpuIx_int}"
+        elif gpuIx:  # non-empty but not valid
+            raise RuntimeError(f"Invalid USE_GPU value: {gpuIx!r}")
 
         dockerCommand += " " + options
 

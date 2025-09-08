@@ -175,11 +175,6 @@ def getModelResults(
         options = "--ipc=host"
         if sharedMemorySizeStr:
             options += " --shm-size=" + sharedMemorySizeStr
-#        if gpuIx is not None and gpuIx >= 0:
-#        if isinstance(gpuIx, int) and gpuIx >= 0:
-#            options += f" --gpus device={gpuIx}"
-#        elif gpuIx == "all":
-#            options += " --gpus all"
 
         if not gpuIx:  # empty string or None
             # Don't add GPU option

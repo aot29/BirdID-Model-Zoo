@@ -3,7 +3,7 @@ FROM python:3.11-slim
 
 # Install the Docker CLI and any other OS dependencies
 RUN apt-get update && \
-    apt-get install -y docker.io && \
+    apt-get install -y docker.io ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /app/ouptput

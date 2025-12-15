@@ -303,6 +303,13 @@ def postProcessResults(
 
     # Collect results from all csv files in outputDir
     outputDir = outputRootDir + modelID + "/"
+
+    # Check if outputDir exists before trying to list files
+    if not os.path.exists(outputDir):
+        print(f"Warning: Output directory does not exist: {outputDir}")
+        print("No results to process (inference may have failed)")
+        return
+
     df_list = []  # List to collect all DataFrames
     for file in os.listdir(outputDir):
         if file.endswith(".csv"):

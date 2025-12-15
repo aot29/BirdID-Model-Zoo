@@ -4,6 +4,7 @@ from multiprocessing import freeze_support
 import argparse
 from typing import Union, Optional
 import time
+import subprocess
 
 # Get root directory of script
 rootDir = os.path.dirname(os.path.abspath(__file__)) + "/"
@@ -88,6 +89,40 @@ dockerConfig = {
     },
 }
 
+def validate_audio_files(file_paths):
+    """Validate audio files using ffprobe and return only valid ones."""
+    valid_files = []
+    invalid_files = []
+
+    for file_path in file_paths:
+        try:
+            # Quick ffprobe check
+            result = subprocess.run(
+                ['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', file_path],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                valid_files.append(file_path)
+            else:
+                invalid_files.append(file_path)
+                print(f"Warning: Invalid audio file (no duration): {file_path}")
+        except subprocess.TimeoutExpired:
+            invalid_files.append(file_path)
+            print(f"Warning: ffprobe timeout on file: {file_path}")
+        except Exception as e:
+            invalid_files.append(file_path)
+            print(f"Warning: Cannot validate file {file_path}: {e}")
+
+    if invalid_files:
+        print(f"\nSkipping {len(invalid_files)} invalid audio files:")
+        for f in invalid_files[:10]:  # Show first 10
+            print(f"  - {f}")
+        if len(invalid_files) > 10:
+            print(f"  ... and {len(invalid_files) - 10} more")
+
+    return valid_files
 
 def getModelResults(
     modelID,
@@ -177,6 +212,7 @@ def getModelResults(
             options += " --shm-size=" + sharedMemorySizeStr
 
         # Add GPU option
+        print("DEBUG: USE_GPU raw value ->", repr(gpuIx))
         if gpuIx is None or gpuIx.strip() == "":
             # Do nothing: no GPU flag
             pass
@@ -374,7 +410,7 @@ def postProcessResults(
         df['start_time'] = df['start_time'].apply(time_str_to_seconds)
         df['end_time'] = df['end_time'].apply(time_str_to_seconds)
 
-        
+
 
 
 
@@ -727,15 +763,16 @@ if __name__ == "__main__":
     # removeContainer = args.removeContainer
 
     # Check if inputDirOrTextFilePath is existing file or folder
-    if not os.path.exists(inputDirOrTextFilePath):
-        raise FileNotFoundError(f"File or folder not found: {inputDirOrTextFilePath}")
-
     if os.path.isfile(inputDirOrTextFilePath):
         with open(inputDirOrTextFilePath, "r") as file:
             filePaths = file.readlines()
-            listOfFilePathsOrFolder = [x.strip() for x in filePaths]
+            all_files = [x.strip() for x in filePaths]
+
+            # Validate audio files before processing
+            print("Validating audio files...")
+            listOfFilePathsOrFolder = validate_audio_files(all_files)
             nFilesToProcess = len(listOfFilePathsOrFolder)
-            print("Number of files to process:", nFilesToProcess)
+            print(f"Valid files to process: {nFilesToProcess} (skipped {len(all_files) - nFilesToProcess} invalid)")
     else:
         listOfFilePathsOrFolder = inputDirOrTextFilePath
 

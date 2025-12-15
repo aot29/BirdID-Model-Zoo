@@ -70,14 +70,22 @@ dockerConfig = {
     "birdid-europe254-medium": {
         "inputDir": "/input",
         "outputDir": "/output",
+        # "image": "ghcr.io/mfn-berlin/birdid-europe254-v250119-1",
+        # "image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
         "image": "ghcr.io/mfn-berlin/birdid-europe254-v250331-1:311173148b6396f89a9d4b104cad95c064697fda",
+        # "image": "birdid-europe254-v250326-1",
+        # "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium",
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize medium --debug",
     },
     "birdid-europe254-large": {
         "inputDir": "/input",
         "outputDir": "/output",
+        # "image": "ghcr.io/mfn-berlin/birdid-europe254-v250119-1",
+        # "image": "ghcr.io/mfn-berlin/birdid-europe254-v250327-1:8870e63f5b14148207835925f2b9db160d61eda7",
         "image": "ghcr.io/mfn-berlin/birdid-europe254-v250331-1:311173148b6396f89a9d4b104cad95c064697fda",
+        # "image": "birdid-europe254-v250326-1",
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large",
+        # "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large --debug",
     },
 }
 
@@ -285,13 +293,6 @@ def postProcessResults(
 
     # Collect results from all csv files in outputDir
     outputDir = outputRootDir + modelID + "/"
-
-    # Check if outputDir exists
-    if not os.path.exists(outputDir):
-        print(f"Warning: Output directory does not exist: {outputDir}")
-        print("No results to process (possibly all files were invalid or skipped)")
-        return
-
     df_list = []  # List to collect all DataFrames
     for file in os.listdir(outputDir):
         if file.endswith(".csv"):
@@ -409,6 +410,11 @@ def postProcessResults(
         df['start_time'] = df['start_time'].apply(time_str_to_seconds)
         df['end_time'] = df['end_time'].apply(time_str_to_seconds)
 
+
+
+
+
+
         # Add col label_id by merging with df_labelToId (Prediction is srcLabelName)
         df = pd.merge(
             df, df_labelToId, how="left", left_on="Prediction", right_on="srcLabelName"
@@ -508,6 +514,8 @@ def postProcessResults(
 
     ## Reset index
     df.reset_index(drop=True, inplace=True)
+
+
 
     print(df)
 
@@ -727,6 +735,8 @@ if __name__ == "__main__":
         default="bmz_",
         help="Container prefix. Defaults to bmz_",
     )
+    # To check and add
+    # parser.add_argument('-r', '--removeContainer', action='store_true', help='Remove container after run. Defaults to True')
 
     args = parser.parse_args()
 
@@ -750,6 +760,7 @@ if __name__ == "__main__":
     removeTemporaryResultFiles = args.removeTemporaryResultFiles
     fileOutputFormats = args.fileOutputFormats
     containerPrefix = args.containerPrefix
+    # removeContainer = args.removeContainer
 
     # Check if inputDirOrTextFilePath is existing file or folder
     if os.path.isfile(inputDirOrTextFilePath):
@@ -762,11 +773,6 @@ if __name__ == "__main__":
             listOfFilePathsOrFolder = validate_audio_files(all_files)
             nFilesToProcess = len(listOfFilePathsOrFolder)
             print(f"Valid files to process: {nFilesToProcess} (skipped {len(all_files) - nFilesToProcess} invalid)")
-
-            # Exit early if no valid files
-            if nFilesToProcess == 0:
-                print("ERROR: No valid audio files to process!")
-                exit(1)
     else:
         listOfFilePathsOrFolder = inputDirOrTextFilePath
 

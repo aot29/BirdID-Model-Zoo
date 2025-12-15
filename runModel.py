@@ -168,6 +168,16 @@ def getModelResults(
         nBatches = 1
         inputIsFolder = True
     else:
+        # Validate files before batching (only if we have a list of files)
+        if isinstance(listOfFilePathsOrFolder, list):
+            print(f"Validating {len(listOfFilePathsOrFolder)} audio files before processing...")
+            listOfFilePathsOrFolder = validate_audio_files(listOfFilePathsOrFolder)
+            print(f"Valid files after validation: {len(listOfFilePathsOrFolder)}")
+
+            if len(listOfFilePathsOrFolder) == 0:
+                print("ERROR: No valid audio files to process after validation!")
+                return
+
         nBatches = (len(listOfFilePathsOrFolder) + nFilesPerBatch - 1) // nFilesPerBatch
         inputIsFolder = False
 
@@ -766,13 +776,8 @@ if __name__ == "__main__":
     if os.path.isfile(inputDirOrTextFilePath):
         with open(inputDirOrTextFilePath, "r") as file:
             filePaths = file.readlines()
-            all_files = [x.strip() for x in filePaths]
-
-            # Validate audio files before processing
-            print("Validating audio files...")
-            listOfFilePathsOrFolder = validate_audio_files(all_files)
-            nFilesToProcess = len(listOfFilePathsOrFolder)
-            print(f"Valid files to process: {nFilesToProcess} (skipped {len(all_files) - nFilesToProcess} invalid)")
+            listOfFilePathsOrFolder = [x.strip() for x in filePaths]
+            print(f"Loaded {len(listOfFilePathsOrFolder)} file paths from {inputDirOrTextFilePath}")
     else:
         listOfFilePathsOrFolder = inputDirOrTextFilePath
 

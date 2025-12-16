@@ -89,40 +89,6 @@ dockerConfig = {
     },
 }
 
-def validate_audio_files(file_paths):
-    """Validate audio files using ffprobe and return only valid ones."""
-    valid_files = []
-    invalid_files = []
-
-    for file_path in file_paths:
-        try:
-            # Quick ffprobe check
-            result = subprocess.run(
-                ['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', file_path],
-                capture_output=True,
-                text=True,
-                timeout=5
-            )
-            if result.returncode == 0 and result.stdout.strip():
-                valid_files.append(file_path)
-            else:
-                invalid_files.append(file_path)
-                print(f"Warning: Invalid audio file (no duration): {file_path}")
-        except subprocess.TimeoutExpired:
-            invalid_files.append(file_path)
-            print(f"Warning: ffprobe timeout on file: {file_path}")
-        except Exception as e:
-            invalid_files.append(file_path)
-            print(f"Warning: Cannot validate file {file_path}: {e}")
-
-    if invalid_files:
-        print(f"\nSkipping {len(invalid_files)} invalid audio files:")
-        for f in invalid_files[:10]:  # Show first 10
-            print(f"  - {f}")
-        if len(invalid_files) > 10:
-            print(f"  ... and {len(invalid_files) - 10} more")
-
-    return valid_files
 
 def getModelResults(
     modelID,
@@ -168,16 +134,6 @@ def getModelResults(
         nBatches = 1
         inputIsFolder = True
     else:
-        # Validate files before batching (only if we have a list of files)
-        if isinstance(listOfFilePathsOrFolder, list):
-            print(f"Validating {len(listOfFilePathsOrFolder)} audio files before processing...")
-            listOfFilePathsOrFolder = validate_audio_files(listOfFilePathsOrFolder)
-            print(f"Valid files after validation: {len(listOfFilePathsOrFolder)}")
-
-            if len(listOfFilePathsOrFolder) == 0:
-                print("ERROR: No valid audio files to process after validation!")
-                return
-
         nBatches = (len(listOfFilePathsOrFolder) + nFilesPerBatch - 1) // nFilesPerBatch
         inputIsFolder = False
 

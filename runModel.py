@@ -175,9 +175,20 @@ def getModelResults(
         options = "--ipc=host"
         if sharedMemorySizeStr:
             options += " --shm-size=" + sharedMemorySizeStr
-#        if gpuIx is not None and gpuIx >= 0:
-        if gpuIx and gpuIx >= 0:
-            options += " --gpus device=" + str(gpuIx)
+
+        # Add GPU option
+        if gpuIx is None or gpuIx.strip() == "":
+            # Do nothing: no GPU flag
+            pass
+        elif gpuIx.lower() == "all":
+            options += " --gpus all"
+        else:
+            try:
+                gpuIx_int = int(gpuIx)
+                if gpuIx_int >= 0:
+                    options += f" --gpus device={gpuIx_int}"
+            except ValueError:
+                raise RuntimeError(f"Invalid USE_GPU value: {gpuIx!r}")
 
         dockerCommand += " " + options
 
@@ -628,12 +639,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "-g",
         "--gpuIx",
-        type=int,
+        type=str,  # Accepts both integers as strings and 'all'
         metavar="",
         default=None,
-        help="GPU index. Defaults to None",
+        help="GPU index. Can be an integer or 'all'. Defaults to None",
     )
-
     parser.add_argument(
         "-t",
         "--minConfidenceThreshold",

@@ -118,6 +118,32 @@ def getLabelsBirdIDEurope254():
 
     return labels
 
+def getLabelsBirdNetPlus():
+
+    # Load labels
+    path = rootDir + 'LabelToIdMappings/ModelLabelFiles/BirdNET+_V3.0-preview2_EUNA_1K_Labels.csv'
+    
+    df_labels = pd.read_csv(path, sep=';')
+    #print(df_labels)
+
+    '''
+    id;sci_name;com_name;gbif;class;order
+    15;Acanthis cabaret;Acanthis cabaret;Acanthis flammea;Aves;Passeriformes
+    16;Acanthis flammea;Redpoll;Acanthis flammea;Aves;Passeriformes
+    18;Acanthis hornemanni;Acanthis hornemanni;Acanthis hornemanni;Aves;Passeriformes
+    49;Astur atricapillus;American Goshawk;Falco atricapillus;Aves;Falconiformes
+    50;Astur gentilis;Eurasian Goshawk;Accipiter gentilis;Aves;Accipitriformes
+    '''
+
+    # Manually fix sci_name: Canis lupus --> Canis lupus (Domestic type) at id 2806
+    df_labels.loc[df_labels['id'] == 2806, 'sci_name'] = 'Canis lupus (Domestic type)'
+
+    # Get sciNames as labels (column sci in df_labels)
+    labels = df_labels['sci_name'].tolist()
+    #print(labels)
+
+    return labels
+
 
 def createLabelToIdMapping(labels, modelID):
 
@@ -200,18 +226,24 @@ def createLabelToIdMapping(labels, modelID):
 ####################################################################################################
 
 
-labels = getLabelsBirdNetV24()
-createLabelToIdMapping(labels, 'birdnet_v2.4')
+# labels = getLabelsBirdNetV24()
+# createLabelToIdMapping(labels, 'birdnet_v2.4')
 
-labels = getLabelsBirdNetV22()
-createLabelToIdMapping(labels, 'birdnet_v2.2')
+# labels = getLabelsBirdNetV22()
+# createLabelToIdMapping(labels, 'birdnet_v2.2')
 
-labels = getLabelsAvesEcho130()
-createLabelToIdMapping(labels, 'avesecho_v1.3.0')
-createLabelToIdMapping(labels, 'avesecho_v1.3.0_transformer')
+# labels = getLabelsAvesEcho130()
+# createLabelToIdMapping(labels, 'avesecho_v1.3.0')
+# createLabelToIdMapping(labels, 'avesecho_v1.3.0_transformer')
 
-labels = getLabelsBirdIDEurope254()
-createLabelToIdMapping(labels, 'birdid-europe254-medium')
-createLabelToIdMapping(labels, 'birdid-europe254-large')
+# labels = getLabelsBirdIDEurope254()
+# createLabelToIdMapping(labels, 'birdid-europe254-medium')
+# createLabelToIdMapping(labels, 'birdid-europe254-large')
+
+labels = getLabelsBirdNetPlus()
+createLabelToIdMapping(labels, 'birdnetplus-v3.0_euna_1k_preview2')
+createLabelToIdMapping(labels, 'birdnetplus-v3.0_euna_1k_ps2_effnetv2')
+
+
 
 print('Done.')

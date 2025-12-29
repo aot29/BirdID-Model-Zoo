@@ -11,9 +11,20 @@ rootDir = os.path.dirname(os.path.abspath(__file__)) + "/"
 
 
 ## Default values
+'''
+models:
+birdnet_v2.2
+birdnet_v2.4
+avesecho_v1.3.0
+avesecho_v1.3.0_transformer
+birdid-europe254-medium
+birdid-europe254-large
+birdnetplus-v3.0_euna_1k_preview2
+birdnetplus-v3.0_euna_1k_ps2_effnetv2
+'''
 
 # Model ID
-modelID = "birdnet_v2.2"  # birdnet_v2.2, birdnet_v2.4, avesecho_v1.3.0, avesecho_v1.3.0_transformer, birdid-europe254-medium, birdid-europe254-large
+modelID = "birdnet_v2.2"
 
 # Output root directory
 outputRootDir = rootDir + "TestOutputsTemp/"
@@ -30,6 +41,7 @@ batchSize = 16
 gpuIx = 0  # None, 0, 1, ...
 
 minConfidenceThreshold = 0.01
+segmentDuration = 3.0  # Only for birdnetplus
 stepDuration = 2.0
 
 sharedMemorySizeStr = "4g"  # None, '4g', '8g', ...
@@ -87,6 +99,22 @@ dockerConfig = {
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large",
         # "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large --debug",
     },
+    
+    # BirdNET+ v3.0 EUNA 1k
+    "birdnetplus-v3.0_euna_1k_preview2": {
+        "inputDir": "/input",
+        "outputDir": "/output",
+        #"image": "birdnetplus-v251219-1",
+        "image": "ghcr.io/mfn-berlin/birdnetplus-v251219-1:latest",
+        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --segmentDuration 3.0 --overlapInPerc 33.333333333 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelPath models/BirdNET+_V3.0-preview2_EUNA_1K_FP32.pt",
+    },
+    "birdnetplus-v3.0_euna_1k_ps2_effnetv2": {
+        "inputDir": "/input",
+        "outputDir": "/output",
+        #"image": "birdnetplus-v251219-1",
+        "image": "ghcr.io/mfn-berlin/birdnetplus-v251219-1:latest",
+        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --segmentDuration 3.0 --overlapInPerc 33.333333333 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelPath models/13_1_1K_AllFolds_EffNetV2_Ps2_Cp59.pt",
+    },
 }
 
 
@@ -101,6 +129,7 @@ def getModelResults(
     batchSize=16,
     gpuIx=0,
     minConfidenceThreshold=0.01,
+    segmentDuration=3.0, # Only for birdnetplus
     stepDuration=2.0,
     sharedMemorySizeStr="4g",
     removeContainer=True,
@@ -203,16 +232,17 @@ def getModelResults(
         ## Modify command depending of passed arguments on model
 
         # Modify minConfidenceThreshold
-        if modelID.startswith("birdnet"):
+        if modelID.startswith("birdnet_"):
             command += " --min_conf " + str(minConfidenceThreshold)
-        if modelID.startswith("birdid"):
+        #if modelID.startswith("birdid"):
+        if modelID.startswith("birdid") or modelID.startswith("birdnetplus"):
             command += " --minConfidence " + str(minConfidenceThreshold)
         if modelID.startswith("avesecho"):
             command += " --mconf " + str(minConfidenceThreshold)
 
         # Modify stepDuration
         if stepDuration:
-            if modelID.startswith("birdnet"):
+            if modelID.startswith("birdnet_"):
                 overlap = 3.0 - stepDuration
                 overlapArg = "--overlap " + str(overlap)
                 command = command.replace("--overlap 1.0", overlapArg)
@@ -222,12 +252,25 @@ def getModelResults(
                 overlapArg = "--overlapInPerc " + str(overlapInPerc)
                 command = command.replace("--overlapInPerc 60", overlapArg)
 
+            if modelID.startswith("birdnetplus"):
+                overlap = segmentDuration - stepDuration
+                overlapInPerc = overlap / segmentDuration * 100
+                overlapArg = "--overlapInPerc " + str(overlapInPerc)
+                command = command.replace("--overlapInPerc 33.333333333", overlapArg)
+
+        if segmentDuration and modelID.startswith("birdnetplus"):
+            segmentDurationArg = "--segmentDuration " + str(segmentDuration)
+            command = command.replace("--segmentDuration 3.0", segmentDurationArg)  # Default is 3.0
+
+            
+
         # Modify nCpuWorkers and batchSize
-        if modelID.startswith("birdnet"):
+        if modelID.startswith("birdnet_"):
             command += (
                 " --threads " + str(nCpuWorkers) + " --batchsize " + str(batchSize)
             )
-        if modelID.startswith("birdid"):
+        #if modelID.startswith("birdid"):
+        if modelID.startswith("birdid") or modelID.startswith("birdnetplus"):
             command += (
                 " --batchSizeFiles "
                 + str(batchSizeFiles)
@@ -418,7 +461,7 @@ def postProcessResults(
             ]
         ]
 
-    if modelID == "birdid-europe254-medium" or modelID == "birdid-europe254-large":
+    if modelID.startswith("birdid") or modelID.startswith("birdnetplus"):
 
         """
         Original format:
@@ -626,7 +669,7 @@ if __name__ == "__main__":
         type=int,
         metavar="",
         default=batchSizeFiles,
-        help="Number of files per preprocessing batch (only birdid). Defaults to "
+        help="Number of files per preprocessing batch (only birdid & birdnetplus). Defaults to "
         + str(batchSizeFiles),
     )
     parser.add_argument(
@@ -660,6 +703,15 @@ if __name__ == "__main__":
         metavar="",
         default=minConfidenceThreshold,
         help="Minimum confidence threshold. Defaults to " + str(minConfidenceThreshold),
+    )
+    parser.add_argument(
+        "-d",
+        "--segmentDuration",
+        type=float,
+        metavar="",
+        default=segmentDuration,
+        help="Duration of chunks (only birdnetplus). Defaults to "
+        + str(segmentDuration),
     )
     parser.add_argument(
         "-s",
@@ -728,6 +780,7 @@ if __name__ == "__main__":
 
     chown = args.changeOutputOwner
     minConfidenceThreshold = args.minConfidenceThreshold
+    segmentDuration = args.segmentDuration
     stepDuration = args.stepDuration
     sharedMemorySizeStr = args.sharedMemorySizeStr
     removeTemporaryResultFiles = args.removeTemporaryResultFiles
@@ -764,6 +817,7 @@ if __name__ == "__main__":
         batchSize=batchSize,
         gpuIx=gpuIx,
         minConfidenceThreshold=minConfidenceThreshold,
+        segmentDuration=segmentDuration,
         stepDuration=stepDuration,
         sharedMemorySizeStr=sharedMemorySizeStr,
         removeContainer=True,

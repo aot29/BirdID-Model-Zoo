@@ -104,13 +104,13 @@ dockerConfig = {
         "inputDir": "/input",
         "outputDir": "/output",
         "image": "ghcr.io/mfn-berlin/birdnetplus-v251219-1-cuda12.6:latest",
-        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --segmentDuration 3.0 --overlapInPerc 33.333333333 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelPath models/BirdNET+_V3.0-preview2_EUNA_1K_FP32.pt",
+        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --segmentDuration 3.0 --overlapInPerc 33.333333333 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelPath models/BirdNET+_V3.0-preview2_EUNA_1K_FP32.pt --debug",
     },
     "birdnetplus-v3.0_euna_1k_ps2_effnetv2": {
         "inputDir": "/input",
         "outputDir": "/output",
         "image": "ghcr.io/mfn-berlin/birdnetplus-v251219-1-cuda12.6:latest",
-        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --segmentDuration 3.0 --overlapInPerc 33.333333333 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelPath models/13_1_1K_AllFolds_EffNetV2_Ps2_Cp59.pt",
+        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --segmentDuration 3.0 --overlapInPerc 33.333333333 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelPath models/13_1_1K_AllFolds_EffNetV2_Ps2_Cp59.pt --debug",
     },
 }
 

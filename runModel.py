@@ -52,7 +52,6 @@ fileOutputFormats = ["csv"]
 
 removeContainer = True
 
-
 # Docker config
 dockerConfig = {
     "birdnet_v2.4": {
@@ -99,13 +98,19 @@ dockerConfig = {
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large",
         # "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --overlapInPerc 60 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelSize large --debug",
     },
-    
+
     # BirdNET+ v3.0 EUNA 1k
     "birdnetplus-v3.0_euna_1k_preview2": {
         "inputDir": "/input",
         "outputDir": "/output",
         "image": "ghcr.io/mfn-berlin/birdnetplus-v251219-1-cuda12.6:latest",
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --segmentDuration 3.0 --overlapInPerc 33.333333333 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelPath models/BirdNET+_V3.0-preview2_EUNA_1K_FP32.pt --debug",
+    },
+    "birdnetplus-v3.0_euna_1k_preview2_seg5": {
+        "inputDir": "/input",
+        "outputDir": "/output",
+        "image": "ghcr.io/mfn-berlin/birdnetplus-v251219-1-cuda12.6:latest",
+        "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --segmentDuration 5.0 --overlapInPerc 33.333333333 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelPath models/BirdNET+_V3.0-preview2_EUNA_1K_FP32.pt --debug",
     },
     "birdnetplus-v3.0_euna_1k_ps2_effnetv2": {
         "inputDir": "/input",
@@ -114,7 +119,6 @@ dockerConfig = {
         "command": "python inference.py -i /input -o /output --fileOutputFormats labels_csv --segmentDuration 3.0 --overlapInPerc 33.333333333 --csvDelimiter , --sortSpecies --nameType sci --includeFilePathInOutputFiles --modelPath models/13_1_1K_AllFolds_EffNetV2_Ps2_Cp59.pt --debug",
     },
 }
-
 
 def getModelResults(
     modelID,
@@ -260,7 +264,7 @@ def getModelResults(
             segmentDurationArg = "--segmentDuration " + str(segmentDuration)
             command = command.replace("--segmentDuration 3.0", segmentDurationArg)  # Default is 3.0
 
-            
+
 
         # Modify nCpuWorkers and batchSize
         if modelID.startswith("birdnet_"):
